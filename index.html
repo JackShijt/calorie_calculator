@@ -266,7 +266,7 @@
       flex-wrap: wrap;
       gap: 15px;
       margin-bottom: 15px;
-      max-height: 480px;
+      max-height: 620px;
       overflow-y: auto;
       padding-right: 5px;
     }
@@ -290,14 +290,43 @@
       min-width: 200px;
     }
 
-    .food-category h3 {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: white;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
+    .food-category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
       padding: 10px;
       border-radius: 8px;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+    }
+
+    .food-category-header:hover {
+      background: linear-gradient(to right, var(--secondary), var(--primary));
+    }
+
+    .food-category-header h3 {
+      font-size: 1rem;
+      margin: 0;
+      color: white;
+    }
+
+    .toggle-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s;
+    }
+
+    .food-category-content {
+      display: block;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .food-category-content.collapsed {
+      display: none;
     }
 
     .food-item {
@@ -334,6 +363,10 @@
     .btn-container {
       margin-top: 20px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
     }
 
     .btn {
@@ -377,6 +410,10 @@
     .btn:active {
       transform: translateY(-1px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-export {
+      background: linear-gradient(to right, #27ae60, #2ecc71);
     }
 
     .results {
@@ -652,7 +689,7 @@
     }
 
     .amount-input {
-      width: 70px;
+      width: 80px;
       padding: 4px 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
@@ -825,6 +862,18 @@
       text-align: center;
     }
 
+    /* 固定汇总卡片 */
+    .fixed-summary {
+      position: sticky;
+      bottom: 20px;
+      z-index: 100;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      margin-top: 20px;
+    }
+
     @media (max-width: 768px) {
       .main-content {
         flex-direction: column;
@@ -874,8 +923,8 @@
       }
     }
 
-    /* 鸡蛋大小选择对话框样式 */
-    .egg-dialog {
+    /* 食材规格选择对话框样式 */
+    .food-dialog {
       position: fixed;
       top: 0;
       left: 0;
@@ -888,7 +937,7 @@
       z-index: 1000;
     }
 
-    .egg-dialog-content {
+    .food-dialog-content {
       background-color: white;
       padding: 25px;
       border-radius: 15px;
@@ -897,18 +946,18 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
 
-    .egg-dialog h3 {
+    .food-dialog h3 {
       color: var(--primary);
       margin-bottom: 15px;
       text-align: center;
     }
 
-    .egg-dialog p {
+    .food-dialog p {
       margin-bottom: 20px;
       text-align: center;
     }
 
-    .egg-size-option {
+    .food-option {
       margin: 15px 0;
       padding: 12px;
       border: 1px solid #ddd;
@@ -917,23 +966,23 @@
       transition: all 0.2s;
     }
 
-    .egg-size-option:hover {
+    .food-option:hover {
       background-color: #f5f7fa;
       border-color: var(--primary);
     }
 
-    .egg-size-option.selected {
+    .food-option.selected {
       background-color: #e1f0ff;
       border-color: var(--primary);
     }
 
-    .egg-dialog-buttons {
+    .food-dialog-buttons {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
 
-    .egg-dialog-btn {
+    .food-dialog-btn {
       padding: 10px 20px;
       border: none;
       border-radius: 8px;
@@ -942,18 +991,18 @@
       transition: all 0.3s;
     }
 
-    .egg-dialog-confirm {
+    .food-dialog-confirm {
       background: linear-gradient(to right, var(--primary), var(--secondary));
       color: white;
       margin-left: 10px;
     }
 
-    .egg-dialog-cancel {
+    .food-dialog-cancel {
       background-color: #f5f5f5;
       color: #666;
     }
 
-    .egg-dialog-btn:hover {
+    .food-dialog-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -1041,6 +1090,9 @@
     <div class="btn-container">
       <button id="calculateBtn" class="btn">
         <span class="btn-text">计算营养需求</span>
+      </button>
+      <button id="exportBtn" class="btn btn-export">
+        <span class="btn-text">导出为图片</span>
       </button>
     </div>
 
@@ -1212,51 +1264,53 @@
               <li>请选择食材并计算</li>
             </ul>
           </div>
-          
-          <!-- 添加总汇总 -->
-          <div class="total-summary" id="totalSummary">
-            <h3>全天营养总览</h3>
-            <div class="total-summary-grid">
-              <div class="total-summary-item">
-                <div class="total-summary-label">总热量</div>
-                <div class="total-summary-value" id="totalCalories">--</div>
-                <div class="total-summary-label">千卡</div>
-                <div class="macro-bar">
-                  <div class="macro-fill calorie-fill" id="totalCaloriesBar" style="width: 0%"></div>
-                </div>
-                <div class="total-summary-label" id="totalCaloriesPercentage">--%</div>
-              </div>
-              <div class="total-summary-item">
-                <div class="total-summary-label">总碳水</div>
-                <div class="total-summary-value" id="totalCarbs">--</div>
-                <div class="total-summary-label">克</div>
-                <div class="macro-bar">
-                  <div class="macro-fill carbs-fill" id="totalCarbsBar" style="width: 0%"></div>
-                </div>
-                <div class="total-summary-label" id="totalCarbsPercentage">--%</div>
-              </div>
-              <div class="total-summary-item">
-                <div class="total-summary-label">总蛋白质</div>
-                <div class="total-summary-value" id="totalProtein">--</div>
-                <div class="total-summary-label">克</div>
-                <div class="macro-bar">
-                  <div class="macro-fill protein-fill" id="totalProteinBar" style="width: 0%"></div>
-                </div>
-                <div class="total-summary-label" id="totalProteinPercentage">--%</div>
-              </div>
-              <div class="total-summary-item">
-                <div class="total-summary-label">总脂肪</div>
-                <div class="total-summary-value" id="totalFat">--</div>
-                <div class="total-summary-label">克</div>
-                <div class="macro-bar">
-                  <div class="macro-fill fat-fill" id="totalFatBar" style="width: 0%"></div>
-                </div>
-                <div class="total-summary-label" id="totalFatPercentage">--%</div>
-              </div>
+        </div>
+      </div>
+
+      <!-- 固定汇总卡片 -->
+      <div class="fixed-summary" id="fixedSummary">
+        <h3>全天营养总览</h3>
+        <div class="total-summary-grid">
+          <div class="total-summary-item">
+            <div class="total-summary-label">总热量</div>
+            <div class="total-summary-value" id="totalCalories">--</div>
+            <div class="total-summary-label">千卡</div>
+            <div class="macro-bar">
+              <div class="macro-fill calorie-fill" id="totalCaloriesBar" style="width: 0%"></div>
             </div>
+            <div class="total-summary-label" id="totalCaloriesPercentage">--%</div>
+          </div>
+          <div class="total-summary-item">
+            <div class="total-summary-label">总碳水</div>
+            <div class="total-summary-value" id="totalCarbs">--</div>
+            <div class="total-summary-label">克</div>
+            <div class="macro-bar">
+              <div class="macro-fill carbs-fill" id="totalCarbsBar" style="width: 0%"></div>
+            </div>
+            <div class="total-summary-label" id="totalCarbsPercentage">--%</div>
+          </div>
+          <div class="total-summary-item">
+            <div class="total-summary-label">总蛋白质</div>
+            <div class="total-summary-value" id="totalProtein">--</div>
+            <div class="total-summary-label">克</div>
+            <div class="macro-bar">
+              <div class="macro-fill protein-fill" id="totalProteinBar" style="width: 0%"></div>
+            </div>
+            <div class="total-summary-label" id="totalProteinPercentage">--%</div>
+          </div>
+          <div class="total-summary-item">
+            <div class="total-summary-label">总脂肪</div>
+            <div class="total-summary-value" id="totalFat">--</div>
+            <div class="total-summary-label">克</div>
+            <div class="macro-bar">
+              <div class="macro-fill fat-fill" id="totalFatBar" style="width: 0%"></div>
+            </div>
+            <div class="total-summary-label" id="totalFatPercentage">--%</div>
           </div>
         </div>
+      </div>
 
+      <div class="summary-card">
         <div class="recommendations">
           <h3>个性化建议</h3>
           <ul id="recommendationsList">
@@ -1267,32 +1321,59 @@
     </div>
   </div>
 
+  <!-- 引入html2canvas库 -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
   <script>
-    // 食材数据保持不变
+    // 食材数据
     const breakfastFoodData = {
       '谷物类': [
         { id: 'quinoa', name: '藜麦', cal: 1.2, protein: 0.04, fat: 0.02, carb: 0.21, type: 'carbohydrate' },
         { id: 'bread', name: '全麦面包', cal: 2.65, protein: 0.09, fat: 0.034, carb: 0.49, type: 'carbohydrate' },
-        { id: 'muesli', name: '燕麦片', cal: 3.7, protein: 0.12, fat: 0.07, carb: 0.67, type: 'carbohydrate' },
+        {
+          id: 'muesli', 
+          name: '燕麦片', 
+          cal: 3.7, 
+          protein: 0.12, 
+          fat: 0.07, 
+          carb: 0.67, 
+          type: 'carbohydrate',
+          options: [
+            { name: '有麸燕麦片', cal: 3.7, protein: 0.12, fat: 0.07, carb: 0.67 },
+            { name: '无麸燕麦片', cal: 3.5, protein: 0.11, fat: 0.06, carb: 0.65 }
+          ]
+        },
         { id: 'cornFlakes', name: '玉米片', cal: 3.8, protein: 0.07, fat: 0.01, carb: 0.87, type: 'carbohydrate' }
       ],
       '蛋白质类': [
         {
           id: 'eggs',
           name: '鸡蛋',
-          cal: 68,           // 改为每个鸡蛋的热量（中号鸡蛋）
-          protein: 6.3,      // 改为每个鸡蛋的蛋白质含量
-          fat: 4.8,          // 改为每个鸡蛋的脂肪含量
-          carb: 0.6,         // 改为每个鸡蛋的碳水化合物含量
+          cal: 68,
+          protein: 6.3,
+          fat: 4.8,
+          carb: 0.6,
           type: 'protein',
-          unit: '个',        // 添加单位字段
-          sizeOptions: [     // 添加大小选项
+          unit: '个',
+          options: [
             { name: '小号(45g)', weight: 45, cal: 54, protein: 5, fat: 3.6, carb: 0.5 },
             { name: '中号(55g)', weight: 55, cal: 68, protein: 6.3, fat: 4.8, carb: 0.6 },
             { name: '大号(65g)', weight: 65, cal: 80, protein: 7.5, fat: 5.7, carb: 0.7 }
           ]
         },
-        { id: 'milk', name: '牛奶', cal: 0.65, protein: 0.03, fat: 0.035, carb: 0.05, type: 'protein' },
+        {
+          id: 'milk',
+          name: '牛奶',
+          cal: 0.65,
+          protein: 0.03,
+          fat: 0.035,
+          carb: 0.05,
+          type: 'protein',
+          options: [
+            { name: '全脂牛奶', cal: 0.65, protein: 0.03, fat: 0.035, carb: 0.05 },
+            { name: '脱脂牛奶', cal: 0.35, protein: 0.034, fat: 0.001, carb: 0.05 }
+          ]
+        },
         { id: 'yogurt', name: '希腊酸奶', cal: 0.61, protein: 0.035, fat: 0.017, carb: 0.047, type: 'protein' },
         { id: 'cottageCheese', name: '茅屋芝士', cal: 0.98, protein: 0.11, fat: 0.045, carb: 0.03, type: 'protein' },
         { id: 'turkeyBreast', name: '火鸡胸肉', cal: 1.35, protein: 0.29, fat: 0.02, carb: 0, type: 'protein' },
@@ -1317,6 +1398,19 @@
     const regularFoodData = {
       '蛋白质': [
         { id: 'chicken', name: '鸡胸肉', cal: 1.65, protein: 0.31, fat: 0.03, carb: 0, type: 'protein' },
+        {
+          id: 'chickenLeg',
+          name: '鸡腿',
+          cal: 1.8,
+          protein: 0.27,
+          fat: 0.09,
+          carb: 0,
+          type: 'protein',
+          options: [
+            { name: '带皮带骨鸡腿', cal: 1.8, protein: 0.27, fat: 0.09, carb: 0 },
+            { name: '去皮去骨鸡腿', cal: 1.5, protein: 0.28, fat: 0.04, carb: 0 }
+          ]
+        },
         { id: 'beef', name: '牛腱', cal: 2.0, protein: 0.21, fat: 0.13, carb: 0, type: 'protein' },
         { id: 'pork', name: '猪里脊', cal: 1.45, protein: 0.21, fat: 0.07, carb: 0, type: 'protein' },
         { id: 'fish', name: '三文鱼', cal: 2.05, protein: 0.22, fat: 0.13, carb: 0, type: 'protein' },
@@ -1372,10 +1466,19 @@
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'food-category';
 
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.textContent = category;
-        categoryDiv.appendChild(categoryTitle);
+        // 创建可展开/收起的标题
+        const categoryHeader = document.createElement('div');
+        categoryHeader.className = 'food-category-header';
+        categoryHeader.innerHTML = `
+          <h3>${category}</h3>
+          <span class="toggle-icon">▶</span>
+        `;
+        categoryDiv.appendChild(categoryHeader);
 
+        // 创建内容区域
+        const categoryContent = document.createElement('div');
+        categoryContent.className = 'food-category-content collapsed';
+        
         breakfastFoodData[category].forEach(food => {
           const foodItemDiv = document.createElement('div');
           foodItemDiv.className = 'food-item';
@@ -1389,12 +1492,12 @@
           checkbox.dataset.carb = food.carb;
           checkbox.dataset.type = 'breakfast';
           checkbox.dataset.category = food.type;
-          checkbox.dataset.unit = food.unit || 'g'; // 添加单位数据
+          checkbox.dataset.unit = food.unit || 'g';
 
-          // 如果是鸡蛋，添加大小选择数据
-          if (food.id === 'eggs') {
-            checkbox.dataset.sizeOptions = JSON.stringify(food.sizeOptions);
-            checkbox.dataset.defaultSize = JSON.stringify(food.sizeOptions[1]); // 默认中号
+          // 如果有规格选项，存储选项数据
+          if (food.options) {
+            checkbox.dataset.options = JSON.stringify(food.options);
+            checkbox.dataset.defaultOption = JSON.stringify(food.options[0]);
           }
 
           const label = document.createElement('label');
@@ -1403,9 +1506,10 @@
 
           foodItemDiv.appendChild(checkbox);
           foodItemDiv.appendChild(label);
-          categoryDiv.appendChild(foodItemDiv);
+          categoryContent.appendChild(foodItemDiv);
         });
 
+        categoryDiv.appendChild(categoryContent);
         breakfastFoodCategoriesContainer.appendChild(categoryDiv);
       }
 
@@ -1416,10 +1520,19 @@
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'food-category';
 
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.textContent = category;
-        categoryDiv.appendChild(categoryTitle);
+        // 创建可展开/收起的标题
+        const categoryHeader = document.createElement('div');
+        categoryHeader.className = 'food-category-header';
+        categoryHeader.innerHTML = `
+          <h3>${category}</h3>
+          <span class="toggle-icon">▶</span>
+        `;
+        categoryDiv.appendChild(categoryHeader);
 
+        // 创建内容区域
+        const categoryContent = document.createElement('div');
+        categoryContent.className = 'food-category-content collapsed';
+        
         regularFoodData[category].forEach(food => {
           const foodItemDiv = document.createElement('div');
           foodItemDiv.className = 'food-item';
@@ -1434,15 +1547,22 @@
           checkbox.dataset.type = 'regular';
           checkbox.dataset.category = food.type;
 
+          // 如果有规格选项，存储选项数据
+          if (food.options) {
+            checkbox.dataset.options = JSON.stringify(food.options);
+            checkbox.dataset.defaultOption = JSON.stringify(food.options[0]);
+          }
+
           const label = document.createElement('label');
           label.htmlFor = 'regular_' + food.id;
           label.textContent = food.name;
 
           foodItemDiv.appendChild(checkbox);
           foodItemDiv.appendChild(label);
-          categoryDiv.appendChild(foodItemDiv);
+          categoryContent.appendChild(foodItemDiv);
         });
 
+        categoryDiv.appendChild(categoryContent);
         regularFoodCategoriesContainer.appendChild(categoryDiv);
       }
     }
@@ -1457,9 +1577,9 @@
           if (this.checked) {
             this.parentElement.classList.add('selected');
 
-            // 如果是鸡蛋，弹出大小选择对话框
-            if (this.id === 'breakfast_eggs') {
-              selectEggSize(this);
+            // 如果有规格选项，弹出选择对话框
+            if (this.dataset.options) {
+              selectFoodOption(this);
             }
           } else {
             this.parentElement.classList.remove('selected');
@@ -1482,28 +1602,50 @@
         }, 500);
       });
 
+      // 为导出按钮添加点击事件
+      const exportBtn = document.getElementById('exportBtn');
+      exportBtn.addEventListener('click', function() {
+        exportToImage();
+      });
+
+      // 为食材类别标题添加点击事件，实现展开/收起功能
+      document.querySelectorAll('.food-category-header').forEach(header => {
+        header.addEventListener('click', function() {
+          const content = this.nextElementSibling;
+          const icon = this.querySelector('.toggle-icon');
+          
+          if (content.classList.contains('collapsed')) {
+            content.classList.remove('collapsed');
+            icon.textContent = '▼';
+          } else {
+            content.classList.add('collapsed');
+            icon.textContent = '▶';
+          }
+        });
+      });
+
       // 初始化计算
       calculateNutrition();
     });
 
-    // 鸡蛋大小选择功能
-    function selectEggSize(checkbox) {
-      const sizeOptions = JSON.parse(checkbox.dataset.sizeOptions);
-      const defaultSize = JSON.parse(checkbox.dataset.defaultSize);
+    // 食物规格选择功能
+    function selectFoodOption(checkbox) {
+      const options = JSON.parse(checkbox.dataset.options);
+      const defaultOption = JSON.parse(checkbox.dataset.defaultOption);
 
       // 创建选择对话框
       const dialog = document.createElement('div');
-      dialog.className = 'egg-dialog';
+      dialog.className = 'food-dialog';
 
       const content = document.createElement('div');
-      content.className = 'egg-dialog-content';
+      content.className = 'food-dialog-content';
 
       content.innerHTML = `
-        <h3>选择鸡蛋大小</h3>
-        <p>请选择您使用的鸡蛋大小：</p>
-        <div id="eggSizeOptions">
-          ${sizeOptions.map((option, index) => `
-            <div class="egg-size-option ${option.name === defaultSize.name ? 'selected' : ''}" data-option='${JSON.stringify(option)}'>
+        <h3>选择${checkbox.nextElementSibling.textContent}规格</h3>
+        <p>请选择您使用的规格：</p>
+        <div id="foodOptions">
+          ${options.map((option, index) => `
+            <div class="food-option ${option.name === defaultOption.name ? 'selected' : ''}" data-option='${JSON.stringify(option)}'>
               <strong>${option.name}</strong>
               <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
                 热量: ${option.cal}千卡 | 蛋白质: ${option.protein}g | 脂肪: ${option.fat}g
@@ -1511,9 +1653,9 @@
             </div>
           `).join('')}
         </div>
-        <div class="egg-dialog-buttons">
-          <button class="egg-dialog-btn egg-dialog-cancel">取消</button>
-          <button class="egg-dialog-btn egg-dialog-confirm">确认</button>
+        <div class="food-dialog-buttons">
+          <button class="food-dialog-btn food-dialog-cancel">取消</button>
+          <button class="food-dialog-btn food-dialog-confirm">确认</button>
         </div>
       `;
 
@@ -1521,9 +1663,9 @@
       document.body.appendChild(dialog);
 
       // 选项点击事件
-      document.querySelectorAll('#eggSizeOptions .egg-size-option').forEach(option => {
+      document.querySelectorAll('#foodOptions .food-option').forEach(option => {
         option.addEventListener('click', function () {
-          document.querySelectorAll('#eggSizeOptions .egg-size-option').forEach(opt => {
+          document.querySelectorAll('#foodOptions .food-option').forEach(opt => {
             opt.classList.remove('selected');
           });
           this.classList.add('selected');
@@ -1531,17 +1673,17 @@
       });
 
       // 确认按钮事件
-      document.querySelector('.egg-dialog-confirm').addEventListener('click', function () {
-        const selectedOption = document.querySelector('#eggSizeOptions .egg-size-option.selected');
+      document.querySelector('.food-dialog-confirm').addEventListener('click', function () {
+        const selectedOption = document.querySelector('#foodOptions .food-option.selected');
         if (selectedOption) {
-          const eggData = JSON.parse(selectedOption.dataset.option);
+          const foodData = JSON.parse(selectedOption.dataset.option);
 
           // 更新复选框的数据属性
-          checkbox.dataset.cal = eggData.cal;
-          checkbox.dataset.protein = eggData.protein;
-          checkbox.dataset.fat = eggData.fat;
-          checkbox.dataset.carb = eggData.carb;
-          checkbox.dataset.defaultSize = JSON.stringify(eggData);
+          checkbox.dataset.cal = foodData.cal;
+          checkbox.dataset.protein = foodData.protein;
+          checkbox.dataset.fat = foodData.fat;
+          checkbox.dataset.carb = foodData.carb;
+          checkbox.dataset.defaultOption = JSON.stringify(foodData);
 
           // 移除对话框
           document.body.removeChild(dialog);
@@ -1549,8 +1691,8 @@
       });
 
       // 取消按钮事件
-      document.querySelector('.egg-dialog-cancel').addEventListener('click', function () {
-        // 如果取消，取消选择鸡蛋
+      document.querySelector('.food-dialog-cancel').addEventListener('click', function () {
+        // 如果取消，取消选择该食材
         checkbox.checked = false;
         checkbox.parentElement.classList.remove('selected');
         document.body.removeChild(dialog);
@@ -1559,11 +1701,96 @@
       // 点击背景关闭对话框
       dialog.addEventListener('click', function (e) {
         if (e.target === dialog) {
-          // 如果点击了背景，取消选择鸡蛋
+          // 如果点击了背景，取消选择该食材
           checkbox.checked = false;
           checkbox.parentElement.classList.remove('selected');
           document.body.removeChild(dialog);
         }
+      });
+    }
+
+    // 导出为图片功能 - 修复判断逻辑和泛白问题
+    function exportToImage() {
+      // 检查是否有实际计算结果，而不是只检查结果区域是否显示
+      const targetCalories = document.getElementById('targetCalories').textContent;
+      if (targetCalories === '--') {
+        alert('请先计算营养需求，然后再导出结果');
+        return;
+      }
+
+      // 显示加载提示
+      const exportBtn = document.getElementById('exportBtn');
+      const originalText = exportBtn.querySelector('.btn-text').textContent;
+      exportBtn.querySelector('.btn-text').innerHTML = '<span class="loading"></span>生成图片中...';
+      exportBtn.disabled = true;
+
+      // 临时调整固定汇总卡片位置
+      const fixedSummary = document.getElementById('fixedSummary');
+      const originalPosition = fixedSummary.style.position;
+      fixedSummary.style.position = 'relative';
+      fixedSummary.style.bottom = 'auto';
+
+      // 使用html2canvas将结果区域转换为图片
+      html2canvas(document.getElementById('resultsSection'), {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        allowTaint: true,
+        removeContainer: true,
+        // 优化设置
+        width: document.getElementById('resultsSection').scrollWidth,
+        height: document.getElementById('resultsSection').scrollHeight,
+        // 修复透明背景问题
+        onclone: function(clonedDoc) {
+          // 确保所有背景都是不透明的
+          const elements = clonedDoc.querySelectorAll('*');
+          elements.forEach(el => {
+            const bg = window.getComputedStyle(el).backgroundColor;
+            if (bg && bg.includes('rgba') && !bg.includes('rgba(0, 0, 0, 0)')) {
+              el.style.backgroundColor = '#ffffff';
+            }
+          });
+          
+          // 确保固定汇总卡片在正确位置
+          const clonedFixedSummary = clonedDoc.getElementById('fixedSummary');
+          if (clonedFixedSummary) {
+            clonedFixedSummary.style.position = 'relative';
+            clonedFixedSummary.style.bottom = 'auto';
+          }
+        }
+      }).then(canvas => {
+        // 将canvas转换为图片URL
+        const imageURL = canvas.toDataURL('image/png');
+        
+        // 创建下载链接
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageURL;
+        downloadLink.download = '营养计算结果.png';
+        
+        // 触发下载
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // 恢复按钮状态
+        exportBtn.querySelector('.btn-text').textContent = originalText;
+        exportBtn.disabled = false;
+        
+        // 恢复固定汇总卡片位置
+        fixedSummary.style.position = originalPosition;
+        fixedSummary.style.bottom = '20px';
+      }).catch(error => {
+        console.error('导出图片时出错:', error);
+        alert('导出图片失败，请重试');
+        
+        // 恢复按钮状态
+        exportBtn.querySelector('.btn-text').textContent = originalText;
+        exportBtn.disabled = false;
+        
+        // 恢复固定汇总卡片位置
+        fixedSummary.style.position = originalPosition;
+        fixedSummary.style.bottom = '20px';
       });
     }
 
@@ -1687,7 +1914,7 @@
       generateRecommendations(goal, hasStrengthTraining, proteinTarget, weight);
     }
 
-    // 修改生成饮食计划的函数
+    // 生成饮食计划的函数
     function generateMealPlan(targetCalories, proteinTarget, carbsTarget, fatTarget) {
       const breakfastSelected = Array.from(document.querySelectorAll('input[type="checkbox"][data-type="breakfast"]:checked'));
       const regularSelected = Array.from(document.querySelectorAll('input[type="checkbox"][data-type="regular"]:checked'));
@@ -1934,8 +2161,7 @@
       document.getElementById('totalFatPercentage').textContent = `${fatPercentage}%`;
     }
 
-    // 改进的食物分配算法 - 优先保证蛋白质摄入
-    // 优化后的食物分配算法 - 严格控制脂肪不超量
+    // 改进的食物分配算法
     function distributeFoodsSmart(foods, targetCalories, targetProtein, targetCarbs, targetFat, isBreakfast) {
       if (!foods.length) return [];
 
@@ -1976,7 +2202,7 @@
               amount = 80; // 蛋白质类基础80g
               break;
             case 'fatty':
-              amount = 10; // 脂肪类基础10g（进一步减少）
+              amount = 10; // 脂肪类基础10g
               break;
             case 'carbohydrate':
               amount = 50; // 碳水类基础50g
@@ -2024,10 +2250,6 @@
       const carbsDeficit = targetCarbs - totalCarbs;
       const fatDeficit = targetFat - totalFat;
 
-      console.log(`初始分配: 蛋白质${totalProtein.toFixed(1)}g, 碳水${totalCarbs.toFixed(1)}g, 脂肪${totalFat.toFixed(1)}g, 热量${totalCalories.toFixed(1)}kcal`);
-      console.log(`目标: 蛋白质${targetProtein}g, 碳水${targetCarbs}g, 脂肪${targetFat}g, 热量${targetCalories}kcal`);
-      console.log(`差距: 蛋白质${proteinDeficit.toFixed(1)}g, 碳水${carbsDeficit.toFixed(1)}g, 脂肪${fatDeficit.toFixed(1)}g, 热量${calorieDeficit.toFixed(1)}kcal`);
-
       // 第三步：精准调整，优先填补蛋白质和热量缺口，同时控制脂肪
       if (calorieDeficit > 0 || proteinDeficit > 0) {
         // 找出蛋白质密度高且脂肪密度低的食材
@@ -2074,7 +2296,7 @@
                 maxIncrease = 50; // 蛋白质类最多增加50g
                 break;
               case 'fatty':
-                maxIncrease = 5; // 脂肪类最多增加5g（严格控制）
+                maxIncrease = 5; // 脂肪类最多增加5g
                 break;
               case 'carbohydrate':
                 maxIncrease = 100; // 碳水类最多增加100g
@@ -2129,7 +2351,7 @@
         const lowFatCarbFoods = [...mealPlan]
           .filter(item => {
             const food = availableFoods.find(f => f.id === item.id);
-            return food && food.carbs > 0 && food.fat < 0.1; // 选择脂肪含量低的碳水食物
+            return food && food.carbs > 0 && food.fat < 0.1;
           })
           .sort((a, b) => {
             const foodA = availableFoods.find(f => f.id === a.id);
@@ -2205,101 +2427,6 @@
           }
         }
       }
-
-      // 第五步：最终检查，如果脂肪超标，减少高脂肪食物的份量
-      const finalFat = mealPlan.reduce((sum, item) => sum + item.fat, 0);
-      if (finalFat > targetFat * 1.05) {
-        // 找出高脂肪食物
-        const highFatFoods = [...mealPlan]
-          .filter(item => {
-            const food = availableFoods.find(f => f.id === item.id);
-            return food && food.fat > 0;
-          })
-          .sort((a, b) => {
-            const foodA = availableFoods.find(f => f.id === a.id);
-            const foodB = availableFoods.find(f => f.id === b.id);
-            return (foodB.fat / foodB.calories) - (foodA.fat / foodA.calories);
-          });
-
-        let fatToReduce = finalFat - targetFat;
-
-        for (const mealItem of highFatFoods) {
-          if (fatToReduce <= 0) break;
-
-          const food = availableFoods.find(f => f.id === mealItem.id);
-          if (!food) continue;
-
-          // 计算可以减少的最大份量
-          let minAmount;
-          const unit = food.unit || 'g';
-
-          if (unit === '个') {
-            minAmount = unitControl['个'].min;
-          } else if (unit === 'ml') {
-            const isOil = food.name.includes('油');
-            const range = isOil ? unitControl.ml.油类 : unitControl.ml.其他;
-            minAmount = range.min;
-          } else {
-            // 按g的食物：根据类别设置最小份量
-            switch (food.category) {
-              case 'protein':
-                minAmount = 50;
-                break;
-              case 'fatty':
-                minAmount = 5;
-                break;
-              case 'carbohydrate':
-                minAmount = 30;
-                break;
-              case 'dietaryFiber':
-                minAmount = 50;
-                break;
-              default:
-                minAmount = 20;
-            }
-          }
-
-          // 当前份量与最小份量的差值
-          const canReduce = mealItem.amount - minAmount;
-          if (canReduce <= 0) continue;
-
-          // 计算减少这份食物可以减少的脂肪
-          const fatReducePerUnit = food.fat;
-          const maxFatReduce = canReduce * fatReducePerUnit;
-
-          // 需要减少的脂肪量
-          const needReduce = Math.min(maxFatReduce, fatToReduce);
-
-          // 计算需要减少的份量
-          const reduceAmount = Math.floor(needReduce / fatReducePerUnit);
-
-          if (reduceAmount > 0) {
-            // 更新餐单项
-            mealItem.amount -= reduceAmount;
-            mealItem.calories -= reduceAmount * food.calories;
-            mealItem.protein -= reduceAmount * food.protein;
-            mealItem.carbs -= reduceAmount * food.carbs;
-            mealItem.fat -= reduceAmount * food.fat;
-
-            fatToReduce -= reduceAmount * food.fat;
-          }
-        }
-
-        // 由于减少了食物，重新计算总营养值
-        totalCalories = mealPlan.reduce((sum, item) => sum + item.calories, 0);
-        totalProtein = mealPlan.reduce((sum, item) => sum + item.protein, 0);
-        totalCarbs = mealPlan.reduce((sum, item) => sum + item.carbs, 0);
-        totalFat = mealPlan.reduce((sum, item) => sum + item.fat, 0);
-      }
-
-      // 计算最终营养值
-      const finalProtein = mealPlan.reduce((sum, item) => sum + item.protein, 0);
-      const finalCarbs = mealPlan.reduce((sum, item) => sum + item.carbs, 0);
-      const finalFatFinal = mealPlan.reduce((sum, item) => sum + item.fat, 0);
-      const finalCaloriesFinal = mealPlan.reduce((sum, item) => sum + item.calories, 0);
-
-      console.log(`最终: 蛋白质${finalProtein.toFixed(1)}g, 碳水${finalCarbs.toFixed(1)}g, 脂肪${finalFatFinal.toFixed(1)}g, 热量${finalCaloriesFinal.toFixed(1)}kcal`);
-      console.log(`达成率: 蛋白质${(finalProtein / targetProtein * 100).toFixed(1)}%, 碳水${(finalCarbs / targetCarbs * 100).toFixed(1)}%, 脂肪${(finalFatFinal / targetFat * 100).toFixed(1)}%, 热量${(finalCaloriesFinal / targetCalories * 100).toFixed(1)}%`);
 
       return mealPlan;
     }
