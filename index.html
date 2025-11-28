@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
+  <link rel="icon" href="/favicon.ico" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>智能减脂保肌营养计算器</title>
@@ -760,29 +762,29 @@
       font-size: 0.9rem;
       border-left: 3px solid var(--secondary);
     }
-    
+
     .meal-summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       text-align: center;
     }
-    
+
     .meal-summary-item {
       padding: 5px;
     }
-    
+
     .meal-summary-value {
       font-weight: 700;
       font-size: 1rem;
       margin-top: 5px;
     }
-    
+
     .meal-summary-label {
       font-size: 0.8rem;
       color: #666;
     }
-    
+
     .total-summary {
       margin-top: 25px;
       padding: 20px;
@@ -790,38 +792,38 @@
       border-radius: 12px;
       border-left: 4px solid var(--primary);
     }
-    
+
     .total-summary h3 {
       color: var(--primary);
       margin-bottom: 15px;
       text-align: center;
     }
-    
+
     .total-summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       text-align: center;
     }
-    
+
     .total-summary-item {
       padding: 10px;
       background: rgba(255, 255, 255, 0.7);
       border-radius: 8px;
     }
-    
+
     .total-summary-value {
       font-weight: 700;
       font-size: 1.2rem;
       margin: 5px 0;
       color: var(--primary);
     }
-    
+
     .total-summary-label {
       font-size: 0.9rem;
       color: #666;
     }
-    
+
     .macro-bar {
       height: 8px;
       background: #eee;
@@ -829,7 +831,7 @@
       margin-top: 5px;
       overflow: hidden;
     }
-    
+
     .macro-fill {
       height: 100%;
       border-radius: 4px;
@@ -838,15 +840,15 @@
     .calorie-fill {
       background: #16f10f;
     }
-    
+
     .carbs-fill {
       background: #3498db;
     }
-    
+
     .protein-fill {
       background: #e74c3c;
     }
-    
+
     .fat-fill {
       background: #f39c12;
     }
@@ -895,11 +897,11 @@
       .panel {
         padding: 20px;
       }
-      
+
       .meal-summary-grid {
         grid-template-columns: 1fr 1fr;
       }
-      
+
       .total-summary-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -1062,14 +1064,6 @@
             <option value="1.9">极度活跃（体力劳动工作或专业运动员）</option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label for="strength">力量训练</label>
-          <select id="strength">
-            <option value="yes">有</option>
-            <option value="no" selected>无</option>
-          </select>
-        </div>
       </div>
 
       <div class="panel">
@@ -1163,7 +1157,7 @@
 
       <div class="summary-card">
         <h2>推荐饮食计划</h2>
-        
+
         <div class="adjustment-notice">
           💡 提示：您可以直接修改食材数量，系统将实时更新营养计算
         </div>
@@ -1331,34 +1325,36 @@
         { id: 'quinoa', name: '藜麦', cal: 1.2, protein: 0.04, fat: 0.02, carb: 0.21, type: 'carbohydrate' },
         { id: 'bread', name: '全麦面包', cal: 2.65, protein: 0.09, fat: 0.034, carb: 0.49, type: 'carbohydrate' },
         {
-          id: 'muesli', 
-          name: '燕麦片', 
-          cal: 3.7, 
-          protein: 0.12, 
-          fat: 0.07, 
-          carb: 0.67, 
+          id: 'muesli',
+          name: '燕麦片',
+          cal: 3.7,
+          protein: 0.12,
+          fat: 0.07,
+          carb: 0.67,
           type: 'carbohydrate',
           options: [
             { name: '有麸燕麦片', cal: 3.7, protein: 0.12, fat: 0.07, carb: 0.67 },
-            { name: '无麸燕麦片', cal: 3.5, protein: 0.11, fat: 0.06, carb: 0.65 }
+            { name: '无麸燕麦片', cal: 3.5, protein: 0.11, fat: 0.06, carb: 0.65 },
+            { name: '燕麦麸', cal: 2.4, protein: 0.14, fat: 0.03, carb: 0.45 }
           ]
         },
-        { id: 'cornFlakes', name: '玉米片', cal: 3.8, protein: 0.07, fat: 0.01, carb: 0.87, type: 'carbohydrate' }
+        { id: 'buckwheat', name: '荞麦', cal: 3.43, protein: 0.13, fat: 0.034, carb: 0.71, type: 'carbohydrate' }
       ],
       '蛋白质类': [
         {
           id: 'eggs',
           name: '鸡蛋',
-          cal: 68,
-          protein: 6.3,
-          fat: 4.8,
-          carb: 0.6,
+          cal: 1.48,
+          protein: 0.13,
+          fat: 0.11,
+          carb: 0.01,
           type: 'protein',
           unit: '个',
           options: [
-            { name: '小号(45g)', weight: 45, cal: 54, protein: 5, fat: 3.6, carb: 0.5 },
-            { name: '中号(55g)', weight: 55, cal: 68, protein: 6.3, fat: 4.8, carb: 0.6 },
-            { name: '大号(65g)', weight: 65, cal: 80, protein: 7.5, fat: 5.7, carb: 0.7 }
+            { name: '小号(45g)', weight: 45, cal: 1.48, protein: 0.13, fat: 0.11, carb: 0.01 },
+            { name: '中号(55g)', weight: 55, cal: 1.48, protein: 0.13, fat: 0.11, carb: 0.01 },
+            { name: '大号(65g)', weight: 65, cal: 1.48, protein: 0.13, fat: 0.11, carb: 0.01 },
+            { name: '鸡蛋白', cal: 0.52, protein: 0.11, fat: 0, carb: 0.02 }
           ]
         },
         {
@@ -1371,13 +1367,26 @@
           type: 'protein',
           options: [
             { name: '全脂牛奶', cal: 0.65, protein: 0.03, fat: 0.035, carb: 0.05 },
-            { name: '脱脂牛奶', cal: 0.35, protein: 0.034, fat: 0.001, carb: 0.05 }
+            { name: '脱脂牛奶', cal: 0.35, protein: 0.034, fat: 0.001, carb: 0.05 },
+            { name: '低脂牛奶', cal: 0.42, protein: 0.034, fat: 0.01, carb: 0.05 }
           ]
         },
-        { id: 'yogurt', name: '希腊酸奶', cal: 0.61, protein: 0.035, fat: 0.017, carb: 0.047, type: 'protein' },
+        {
+          id: 'yogurt',
+          name: '酸奶',
+          cal: 0.61,
+          protein: 0.035,
+          fat: 0.017,
+          carb: 0.047,
+          type: 'protein',
+          options: [
+            { name: '希腊酸奶', cal: 0.61, protein: 0.035, fat: 0.017, carb: 0.047 },
+            { name: '脱脂酸奶', cal: 0.56, protein: 0.038, fat: 0.005, carb: 0.08 }
+          ]
+        },
         { id: 'cottageCheese', name: '茅屋芝士', cal: 0.98, protein: 0.11, fat: 0.045, carb: 0.03, type: 'protein' },
         { id: 'turkeyBreast', name: '火鸡胸肉', cal: 1.35, protein: 0.29, fat: 0.02, carb: 0, type: 'protein' },
-        { id: 'proteinPowder', name: '蛋白粉', cal: 4.0, protein: 0.8, fat: 0.05, carb: 0.05, type: 'protein' }
+        { id: 'proteinPowder', name: '蛋白粉', cal: 3.8, protein: 0.78, fat: 0.05, carb: 0.05, type: 'protein' }
       ],
       '水果类': [
         { id: 'banana', name: '香蕉', cal: 0.89, protein: 0.011, fat: 0.003, carb: 0.23, type: 'dietaryFiber' },
@@ -1387,11 +1396,32 @@
         { id: 'grapefruit', name: '西柚', cal: 0.42, protein: 0.008, fat: 0.001, carb: 0.11, type: 'dietaryFiber' }
       ],
       '健康脂肪': [
-        { id: 'nuts', name: '混合坚果', cal: 6.07, protein: 0.2, fat: 0.54, carb: 0.21, type: 'fatty' },
+        {
+          id: 'nuts',
+          name: '坚果',
+          cal: 6.07,
+          protein: 0.2,
+          fat: 0.54,
+          carb: 0.21,
+          type: 'fatty',
+          options: [
+            { name: '混合坚果', cal: 6.07, protein: 0.2, fat: 0.54, carb: 0.21 },
+            { name: '杏仁', cal: 5.78, protein: 0.21, fat: 0.49, carb: 0.22 },
+            { name: '核桃', cal: 6.54, protein: 0.15, fat: 0.65, carb: 0.14 }
+          ]
+        },
         { id: 'chiaSeeds', name: '奇亚籽', cal: 4.86, protein: 0.17, fat: 0.31, carb: 0.42, type: 'fatty' },
         { id: 'flaxseeds', name: '亚麻籽', cal: 5.34, protein: 0.18, fat: 0.42, carb: 0.29, type: 'fatty' },
         { id: 'avocado', name: '牛油果', cal: 1.6, protein: 0.02, fat: 0.15, carb: 0.09, type: 'fatty' },
-        { id: 'peanutButter', name: '花生酱', cal: 5.88, protein: 0.25, fat: 0.5, carb: 0.2, type: 'fatty' }
+        {
+          id: 'peanutButter',
+          name: '花生酱',
+          cal: 5.88,
+          protein: 0.22,
+          fat: 0.5,
+          carb: 0.2,
+          type: 'fatty'
+        }
       ]
     };
 
@@ -1416,6 +1446,8 @@
         { id: 'fish', name: '三文鱼', cal: 2.05, protein: 0.22, fat: 0.13, carb: 0, type: 'protein' },
         { id: 'tuna', name: '金枪鱼', cal: 1.84, protein: 0.30, fat: 0.06, carb: 0, type: 'protein' },
         { id: 'shrimp', name: '虾仁', cal: 0.85, protein: 0.20, fat: 0.01, carb: 0, type: 'protein' },
+        { id: 'whiteFish', name: '白鱼肉', cal: 1.0, protein: 0.21, fat: 0.01, carb: 0, type: 'protein' },
+        { id: 'shellfish', name: '贝类', cal: 0.85, protein: 0.18, fat: 0.01, carb: 0.03, type: 'protein' },
         { id: 'tofu', name: '豆腐', cal: 0.76, protein: 0.08, fat: 0.045, carb: 0.019, type: 'protein' },
         { id: 'tempeh', name: '天贝', cal: 1.93, protein: 0.19, fat: 0.11, carb: 0.09, type: 'protein' },
         { id: 'lentils', name: '扁豆', cal: 1.16, protein: 0.09, fat: 0.004, carb: 0.20, type: 'protein' }
@@ -1423,8 +1455,10 @@
       '碳水化合物': [
         { id: 'rice', name: '白米饭', cal: 1.3, protein: 0.025, fat: 0.01, carb: 0.28, type: 'carbohydrate' },
         { id: 'brownRice', name: '糙米饭', cal: 1.23, protein: 0.026, fat: 0.009, carb: 0.25, type: 'carbohydrate' },
+        { id: 'blackRice', name: '黑米', cal: 1.33, protein: 0.028, fat: 0.01, carb: 0.27, type: 'carbohydrate' },
         { id: 'sweetPotato', name: '红薯', cal: 0.9, protein: 0.02, fat: 0.001, carb: 0.21, type: 'carbohydrate' },
         { id: 'potato', name: '土豆', cal: 0.77, protein: 0.02, fat: 0.001, carb: 0.17, type: 'carbohydrate' },
+        { id: 'pumpkin', name: '南瓜', cal: 0.26, protein: 0.01, fat: 0.001, carb: 0.065, type: 'carbohydrate' },
         { id: 'pasta', name: '全麦意面', cal: 1.31, protein: 0.05, fat: 0.009, carb: 0.25, type: 'carbohydrate' },
         { id: 'buckwheat', name: '荞麦', cal: 3.43, protein: 0.13, fat: 0.034, carb: 0.71, type: 'carbohydrate' },
         { id: 'corn', name: '玉米', cal: 0.86, protein: 0.032, fat: 0.012, carb: 0.19, type: 'carbohydrate' }
@@ -1439,7 +1473,10 @@
         { id: 'cucumber', name: '黄瓜', cal: 0.15, protein: 0.0065, fat: 0.001, carb: 0.036, type: 'dietaryFiber' },
         { id: 'mushroom', name: '蘑菇', cal: 0.22, protein: 0.031, fat: 0.003, carb: 0.033, type: 'dietaryFiber' },
         { id: 'zucchini', name: '西葫芦', cal: 0.17, protein: 0.012, fat: 0.003, carb: 0.033, type: 'dietaryFiber' },
-        { id: 'cauliflower', name: '菜花', cal: 0.25, protein: 0.019, fat: 0.003, carb: 0.05, type: 'dietaryFiber' }
+        { id: 'cauliflower', name: '菜花', cal: 0.25, protein: 0.019, fat: 0.003, carb: 0.05, type: 'dietaryFiber' },
+        { id: 'asparagus', name: '芦笋', cal: 0.20, protein: 0.022, fat: 0.001, carb: 0.039, type: 'dietaryFiber' },
+        { id: 'celery', name: '芹菜', cal: 0.16, protein: 0.007, fat: 0.002, carb: 0.03, type: 'dietaryFiber' },
+        { id: 'cabbage', name: '卷心菜', cal: 0.25, protein: 0.013, fat: 0.002, carb: 0.058, type: 'dietaryFiber' }
       ],
       '健康脂肪': [
         { id: 'oliveOil', name: '橄榄油', cal: 8.84, protein: 0, fat: 1, carb: 0, type: 'fatty' },
@@ -1478,7 +1515,7 @@
         // 创建内容区域
         const categoryContent = document.createElement('div');
         categoryContent.className = 'food-category-content collapsed';
-        
+
         breakfastFoodData[category].forEach(food => {
           const foodItemDiv = document.createElement('div');
           foodItemDiv.className = 'food-item';
@@ -1532,7 +1569,7 @@
         // 创建内容区域
         const categoryContent = document.createElement('div');
         categoryContent.className = 'food-category-content collapsed';
-        
+
         regularFoodData[category].forEach(food => {
           const foodItemDiv = document.createElement('div');
           foodItemDiv.className = 'food-item';
@@ -1604,16 +1641,16 @@
 
       // 为导出按钮添加点击事件
       const exportBtn = document.getElementById('exportBtn');
-      exportBtn.addEventListener('click', function() {
+      exportBtn.addEventListener('click', function () {
         exportToImage();
       });
 
       // 为食材类别标题添加点击事件，实现展开/收起功能
       document.querySelectorAll('.food-category-header').forEach(header => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
           const content = this.nextElementSibling;
           const icon = this.querySelector('.toggle-icon');
-          
+
           if (content.classList.contains('collapsed')) {
             content.classList.remove('collapsed');
             icon.textContent = '▼';
@@ -1742,7 +1779,7 @@
         width: document.getElementById('resultsSection').scrollWidth,
         height: document.getElementById('resultsSection').scrollHeight,
         // 修复透明背景问题
-        onclone: function(clonedDoc) {
+        onclone: function (clonedDoc) {
           // 确保所有背景都是不透明的
           const elements = clonedDoc.querySelectorAll('*');
           elements.forEach(el => {
@@ -1751,7 +1788,7 @@
               el.style.backgroundColor = '#ffffff';
             }
           });
-          
+
           // 确保固定汇总卡片在正确位置
           const clonedFixedSummary = clonedDoc.getElementById('fixedSummary');
           if (clonedFixedSummary) {
@@ -1762,32 +1799,32 @@
       }).then(canvas => {
         // 将canvas转换为图片URL
         const imageURL = canvas.toDataURL('image/png');
-        
+
         // 创建下载链接
         const downloadLink = document.createElement('a');
         downloadLink.href = imageURL;
         downloadLink.download = '营养计算结果.png';
-        
+
         // 触发下载
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
-        
+
         // 恢复按钮状态
         exportBtn.querySelector('.btn-text').textContent = originalText;
         exportBtn.disabled = false;
-        
+
         // 恢复固定汇总卡片位置
         fixedSummary.style.position = originalPosition;
         fixedSummary.style.bottom = '20px';
       }).catch(error => {
         console.error('导出图片时出错:', error);
         alert('导出图片失败，请重试');
-        
+
         // 恢复按钮状态
         exportBtn.querySelector('.btn-text').textContent = originalText;
         exportBtn.disabled = false;
-        
+
         // 恢复固定汇总卡片位置
         fixedSummary.style.position = originalPosition;
         fixedSummary.style.bottom = '20px';
@@ -1802,7 +1839,6 @@
       const gender = document.getElementById('gender').value;
       const activityLevel = parseFloat(document.getElementById('activity').value);
       const goal = document.getElementById('goal').value;
-      const hasStrengthTraining = document.getElementById('strength').value === 'yes';
 
       // 验证输入
       if (!weight || !height || !age) {
@@ -1837,21 +1873,34 @@
       // 改进的蛋白质需求计算 (基于体重、目标和训练情况)
       let proteinPerKg;
       if (goal === 'loss') {
-        // 减脂期间需要更多蛋白质以保持肌肉
-        proteinPerKg = hasStrengthTraining ? 2.0 : 1.6;
+        // 减脂期间，根据活动水平调整蛋白质需求
+        if (activityLevel >= 1.725) {
+          proteinPerKg = 2.2; // 高活动水平减脂
+        } else if (activityLevel >= 1.55) {
+          proteinPerKg = 2.0; // 中等活动水平减脂
+        } else {
+          proteinPerKg = 1.8; // 低活动水平减脂
+        }
       } else if (goal === 'gain') {
-        // 增肌期间需要更多蛋白质支持肌肉合成
-        proteinPerKg = hasStrengthTraining ? 1.8 : 1.5;
+        // 增肌期间
+        if (activityLevel >= 1.725) {
+          proteinPerKg = 2.0; // 高活动水平增肌
+        } else if (activityLevel >= 1.55) {
+          proteinPerKg = 1.8; // 中等活动水平增肌
+        } else {
+          proteinPerKg = 1.6; // 低活动水平增肌
+        }
       } else {
-        // 维持期间也需要足够蛋白质防止肌肉流失
-        proteinPerKg = hasStrengthTraining ? 1.6 : 1.4;
+        // 维持期间
+        proteinPerKg = 1.4 + (activityLevel - 1.2) * 0.2; // 基于活动水平线性调整
       }
+
 
       // 根据活动水平进一步调整蛋白质需求
       // 更高活动水平需要更多蛋白质
-      if (activityLevel >= 1.725) {
-        proteinPerKg += 0.2;
-      }
+      // if (activityLevel >= 1.725) {
+      //   proteinPerKg += 0.2;
+      // }
 
       let proteinTarget = proteinPerKg * weight;
 
@@ -1911,7 +1960,7 @@
       generateMealPlan(targetCalories, proteinTarget, carbsTarget, fatTarget);
 
       // 生成个性化建议
-      generateRecommendations(goal, hasStrengthTraining, proteinTarget, weight);
+      generateRecommendations(goal, proteinTarget, weight);
     }
 
     // 生成饮食计划的函数
@@ -1985,7 +2034,7 @@
       displayMealPlan('breakfastList', breakfastPlan, 'breakfast');
       displayMealPlan('lunchList', lunchPlan, 'lunch');
       displayMealPlan('dinnerList', dinnerPlan, 'dinner');
-      
+
       // 更新总汇总
       updateTotalSummary();
     }
@@ -2025,9 +2074,9 @@
         amountInput.min = 1;
         amountInput.dataset.foodId = item.id;
         amountInput.dataset.mealType = mealType;
-        
+
         // 添加事件监听器，当用户修改数量时更新营养计算
-        amountInput.addEventListener('change', function() {
+        amountInput.addEventListener('change', function () {
           updateFoodAmount(this.dataset.mealType, this.dataset.foodId, parseFloat(this.value));
         });
 
@@ -2056,17 +2105,17 @@
       // 找到对应的食材
       const mealPlan = currentMealPlan[mealType];
       const foodItem = mealPlan.find(item => item.id === foodId);
-      
+
       if (foodItem) {
         // 更新食材数量
         foodItem.amount = newAmount;
-        
+
         // 重新计算该食材的营养值
         foodItem.calories = newAmount * foodItem.baseCalories;
         foodItem.protein = newAmount * foodItem.baseProtein;
         foodItem.carbs = newAmount * foodItem.baseCarbs;
         foodItem.fat = newAmount * foodItem.baseFat;
-        
+
         // 重新计算餐次汇总和总汇总
         recalculateMealNutrition(mealType);
         updateTotalSummary();
@@ -2076,7 +2125,7 @@
     // 重新计算餐次营养
     function recalculateMealNutrition(mealType) {
       const mealPlan = currentMealPlan[mealType];
-      
+
       let totalCalories = 0;
       let totalProtein = 0;
       let totalCarbs = 0;
@@ -2113,12 +2162,12 @@
       const breakfastCarbs = parseFloat(document.getElementById('breakfastCarbs').textContent) || 0;
       const breakfastProtein = parseFloat(document.getElementById('breakfastProtein').textContent) || 0;
       const breakfastFat = parseFloat(document.getElementById('breakfastFat').textContent) || 0;
-      
+
       const lunchCalories = parseFloat(document.getElementById('lunchCalories').textContent) || 0;
       const lunchCarbs = parseFloat(document.getElementById('lunchCarbs').textContent) || 0;
       const lunchProtein = parseFloat(document.getElementById('lunchProtein').textContent) || 0;
       const lunchFat = parseFloat(document.getElementById('lunchFat').textContent) || 0;
-      
+
       const dinnerCalories = parseFloat(document.getElementById('dinnerCalories').textContent) || 0;
       const dinnerCarbs = parseFloat(document.getElementById('dinnerCarbs').textContent) || 0;
       const dinnerProtein = parseFloat(document.getElementById('dinnerProtein').textContent) || 0;
@@ -2431,7 +2480,7 @@
       return mealPlan;
     }
 
-    function generateRecommendations(goal, hasStrengthTraining, proteinTarget, weight) {
+    function generateRecommendations(goal, proteinTarget, weight) {
       const recommendationsList = document.getElementById('recommendationsList');
       recommendationsList.innerHTML = '';
 
@@ -2459,16 +2508,6 @@
         recommendations.push('定期评估体重变化，适时调整热量摄入');
       }
 
-      // 根据训练情况添加建议
-      if (hasStrengthTraining) {
-        recommendations.push('建议在力量训练后30分钟内补充蛋白质');
-        recommendations.push('训练日可适当增加碳水化合物摄入');
-        recommendations.push('确保训练前后有足够的能量供应');
-      } else {
-        recommendations.push('即使不进行力量训练，也建议保持适量蛋白质摄入');
-        recommendations.push('结合有氧运动可以提高整体健康水平');
-      }
-
       // 显示建议
       recommendations.forEach((rec, index) => {
         const li = document.createElement('li');
@@ -2481,4 +2520,5 @@
     }
   </script>
 </body>
+
 </html>
