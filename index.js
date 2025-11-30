@@ -426,9 +426,9 @@ function selectFoodOption(checkbox) {
   });
 }
 
-// 导出为图片功能 - 修复判断逻辑和泛白问题
+// 修改 exportToImage 函数
 function exportToImage() {
-  // 检查是否有实际计算结果，而不是只检查结果区域是否显示
+  // 检查是否有实际计算结果
   const targetCalories = document.getElementById('targetCalories').textContent;
   if (targetCalories === '--') {
     alert('请先计算营养需求，然后再导出结果');
@@ -441,41 +441,20 @@ function exportToImage() {
   exportBtn.querySelector('.btn-text').innerHTML = '<span class="loading"></span>生成图片中...';
   exportBtn.disabled = true;
 
-  // 临时调整固定汇总卡片位置
-  const fixedSummary = document.getElementById('fixedSummary');
-  const originalPosition = fixedSummary.style.position;
-  fixedSummary.style.position = 'relative';
-  fixedSummary.style.bottom = 'auto';
-
-  // 使用html2canvas将结果区域转换为图片
-  html2canvas(document.getElementById('resultsSection'), {
-    scale: 2,
+  // 创建专门的导出内容
+  const exportContent = createExportContent();
+  
+  // 添加到DOM中并确保可见
+  document.body.appendChild(exportContent);
+  
+  // 使用html2canvas将导出内容转换为图片
+  html2canvas(exportContent, {
+    scale: 2, // 适当的分辨率
     useCORS: true,
     backgroundColor: '#ffffff',
     logging: false,
-    allowTaint: true,
-    removeContainer: true,
-    // 优化设置
-    width: document.getElementById('resultsSection').scrollWidth,
-    height: document.getElementById('resultsSection').scrollHeight,
-    // 修复透明背景问题
-    onclone: function (clonedDoc) {
-      // 确保所有背景都是不透明的
-      const elements = clonedDoc.querySelectorAll('*');
-      elements.forEach(el => {
-        const bg = window.getComputedStyle(el).backgroundColor;
-        if (bg && bg.includes('rgba') && !bg.includes('rgba(0, 0, 0, 0)')) {
-          el.style.backgroundColor = '#ffffff';
-        }
-      });
-
-      // 确保固定汇总卡片在正确位置
-      const clonedFixedSummary = clonedDoc.getElementById('fixedSummary');
-      if (clonedFixedSummary) {
-        clonedFixedSummary.style.position = 'relative';
-        clonedFixedSummary.style.bottom = 'auto';
-      }
-    }
+    width: exportContent.scrollWidth,
+    height: exportContent.scrollHeight
   }).then(canvas => {
     // 将canvas转换为图片URL
     const imageURL = canvas.toDataURL('image/png');
@@ -483,32 +462,239 @@ function exportToImage() {
     // 创建下载链接
     const downloadLink = document.createElement('a');
     downloadLink.href = imageURL;
-    downloadLink.download = '营养计算结果.png';
+    downloadLink.download = '我的饮食计划.png';
 
     // 触发下载
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
 
+    // 从DOM中移除临时内容
+    document.body.removeChild(exportContent);
+
     // 恢复按钮状态
     exportBtn.querySelector('.btn-text').textContent = originalText;
     exportBtn.disabled = false;
-
-    // 恢复固定汇总卡片位置
-    fixedSummary.style.position = originalPosition;
-    fixedSummary.style.bottom = '20px';
   }).catch(error => {
     console.error('导出图片时出错:', error);
     alert('导出图片失败，请重试');
 
+    // 从DOM中移除临时内容
+    if (document.body.contains(exportContent)) {
+      document.body.removeChild(exportContent);
+    }
+
     // 恢复按钮状态
     exportBtn.querySelector('.btn-text').textContent = originalText;
     exportBtn.disabled = false;
-
-    // 恢复固定汇总卡片位置
-    fixedSummary.style.position = originalPosition;
-    fixedSummary.style.bottom = '20px';
   });
+}
+
+// 创建专门用于导出的内容
+function createExportContent() {
+  const exportContainer = document.createElement('div');
+  exportContainer.className = 'export-container';
+  
+  // 获取当前日期
+  const now = new Date();
+  const dateString = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  
+  // 获取总热量
+  const totalCalories = document.getElementById('totalCalories').textContent;
+  
+  // 构建导出内容
+  exportContainer.innerHTML = `
+    <div class="export-header">
+      <h1>📋 我的饮食计划</h1>
+      <div class="date">${dateString}</div>
+    </div>
+
+    <div class="meal-section">
+      <div class="meal-title">
+        <span>🍳 早餐</span>
+        <span class="meal-percentage">(20%)</span>
+      </div>
+      <ul class="food-list-export" id="exportBreakfastList">
+        ${generateExportFoodList('breakfast')}
+      </ul>
+    </div>
+
+    <div class="meal-section">
+      <div class="meal-title">
+        <span>🍲 午餐</span>
+        <span class="meal-percentage">(45%)</span>
+      </div>
+      <ul class="food-list-export" id="exportLunchList">
+        ${generateExportFoodList('lunch')}
+      </ul>
+    </div>
+
+    <div class="meal-section">
+      <div class="meal-title">
+        <span>🍽️ 晚餐</span>
+        <span class="meal-percentage">(35%)</span>
+      </div>
+      <ul class="food-list-export" id="exportDinnerList">
+        ${generateExportFoodList('dinner')}
+      </ul>
+    </div>
+
+    <div class="export-footer">
+      <div>由智能减脂保肌营养计算器生成</div>
+      <div class="total-calories">总热量: ${totalCalories} 千卡</div>
+    </div>
+  `;
+
+  // 设置可见的样式
+  exportContainer.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    padding: 25px 20px;
+    border-radius: 20px;
+    z-index: 10000;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    opacity: 1;
+    font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  `;
+
+  // 添加内联样式确保所有元素都可见
+  const style = document.createElement('style');
+  style.textContent = `
+    .export-container * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .export-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      color: #333 !important;
+    }
+    .export-header {
+      text-align: center;
+      margin-bottom: 25px;
+      color: white !important;
+    }
+    .export-header h1 {
+      font-size: 24px !important;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .export-header .date {
+      font-size: 16px !important;
+      opacity: 0.9;
+    }
+    .meal-section {
+      background: white !important;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .meal-title {
+      font-size: 20px !important;
+      font-weight: bold;
+      color: #4a6fa5 !important;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e8eff7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .meal-percentage {
+      font-size: 16px !important;
+      color: #666;
+      font-weight: normal;
+    }
+    .food-list-export {
+      list-style: none;
+    }
+    .food-item-export {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 18px !important;
+    }
+    .food-item-export:last-child {
+      border-bottom: none;
+    }
+    .food-name-export {
+      font-weight: 600;
+      color: #2c3e50 !important;
+      flex: 1;
+    }
+    .food-amount-export {
+      background: #f8f9fa;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #4a6fa5 !important;
+      min-width: 80px;
+      text-align: center;
+      font-size: 16px !important;
+    }
+    .export-footer {
+      text-align: center;
+      margin-top: 20px;
+      color: white !important;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .total-calories {
+      background: rgba(255,255,255,0.2);
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+  `;
+  exportContainer.appendChild(style);
+
+  return exportContainer;
+}
+
+// 生成导出用的食物列表
+function generateExportFoodList(mealType) {
+  const mealPlan = currentMealPlan[mealType];
+  
+  if (!mealPlan || mealPlan.length === 0) {
+    return '<li class="food-item-export"><span class="food-name-export">暂无食材选择</span></li>';
+  }
+  
+  return mealPlan.map(item => {
+    let displayAmount = item.amount;
+    let displayUnit = item.unit;
+    
+    // 特殊处理：如果单位是"个"，显示为"×数量"
+    if (displayUnit === '个') {
+      return `
+        <li class="food-item-export">
+          <span class="food-name-export">${item.name}</span>
+          <span class="food-amount-export">×${displayAmount}</span>
+        </li>
+      `;
+    }
+    
+    // 其他情况显示数量和单位
+    return `
+      <li class="food-item-export">
+        <span class="food-name-export">${item.name}</span>
+        <span class="food-amount-export">${displayAmount}${displayUnit}</span>
+      </li>
+    `;
+  }).join('');
 }
 
 function calculateNutrition() {
